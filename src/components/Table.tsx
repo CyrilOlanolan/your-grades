@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import * as Input from "./ui/Input";
 import { FormDataModel } from "./Form";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type TableProps = {
   className?: string;
@@ -51,6 +51,10 @@ const TR = ({
 const Table: FC<TableProps> = ({ data }) => {
   const [dataInTable, setDataInTable] = useState<FormDataModel[]>(data);
 
+  useEffect(() => {
+    setDataInTable(data);
+  }, [data]);
+
   const qpi =
     data.reduce((acc, curr) => {
       switch (curr.courseGrade) {
@@ -74,12 +78,12 @@ const Table: FC<TableProps> = ({ data }) => {
     }, 0) / data.reduce((acc, curr) => acc + curr.courseUnits, 0);
 
   function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
-    event.target.value = event.target.value.toUpperCase();
-
     const filteredData = data.filter(
       (datum) =>
-        datum.courseName.toUpperCase().includes(event.target.value) ||
-        datum.courseNum.toUpperCase().includes(event.target.value)
+        datum.courseName
+          .toUpperCase()
+          .includes(event.target.value.toUpperCase()) ||
+        datum.courseNum.toUpperCase().includes(event.target.value.toUpperCase())
     );
 
     setDataInTable(filteredData);
